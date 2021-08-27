@@ -87,7 +87,7 @@ func (r *ResultHolder) Then(callback interface{}) *ResultHolder {
 	return Call(callback, r)
 }
 
-func (r *ResultHolder) IfElse(condition interface{}, trueBlock, falseBlock interface{}) *ResultHolder {
+func IfElse(condition interface{}, trueBlock, falseBlock interface{}, args ...interface{}) *ResultHolder {
 	condRh := condition.(*ResultHolder)
 	if condRh.error != nil {
 		return condRh
@@ -98,10 +98,8 @@ func (r *ResultHolder) IfElse(condition interface{}, trueBlock, falseBlock inter
 		return &ResultHolder{error: errors.New("condition must be bool")}
 	}
 	if cond {
-		return Call(trueBlock, r)
+		return Call(trueBlock, args...)
 	} else {
-		return Call(falseBlock, r)
+		return Call(falseBlock, args...)
 	}
 }
-
-

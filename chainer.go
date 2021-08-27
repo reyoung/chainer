@@ -86,3 +86,20 @@ func (r *ResultHolder) MustValue() interface{} {
 func (r *ResultHolder) Then(callback interface{}) *ResultHolder {
 	return Call(callback, r)
 }
+
+func (r *ResultHolder) IfElse(condition interface{}, trueBlock, falseBlock interface{}) *ResultHolder {
+	condRh := condition.(*ResultHolder)
+	if condRh.error != nil {
+		return condRh
+	}
+	condition = condRh.value
+	cond, ok := condition.(bool)
+	if !ok {
+		return &ResultHolder{error: errors.New("condition must be bool")}
+	}
+	if cond {
+		return Call(trueBlock, r)
+	} else {
+		return Call(falseBlock, r)
+	}
+}
